@@ -58,7 +58,6 @@ local btnGolf = createButton("Golf Script", 35)
 local btnObby = createButton("Obby Script", 80)
 local btnParkour = createButton("Parkour Script", 125)
 local btnHealth = createButton("Health Check", 170)
-local btnOrbital = createButton("Orbital Kill", 215)
 
 -- Botão destruir
 local btnDestroy = Instance.new("TextButton")
