@@ -1,4 +1,4 @@
--- Serviços
+-- ServiçosAdd commentMore actions
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local VirtualInputManager = game:GetService("VirtualInputManager")
@@ -58,6 +58,7 @@ local btnGolf = createButton("Golf Script", 35)
 local btnObby = createButton("Obby Script", 80)
 local btnParkour = createButton("Parkour Script", 125)
 local btnHealth = createButton("Health Check", 170)
+local btnOrbital = createButton("Orbital Kill", 215)
 
 -- Botão destruir
 local btnDestroy = Instance.new("TextButton")
@@ -237,7 +238,7 @@ spawn(function()
                 end
             end
         else
-            if platform then platform:Destroy() platform=nil end
+            if platform then platform:Destroy() platform=nil endAdd commentMore actions
         end
     end
 end)
