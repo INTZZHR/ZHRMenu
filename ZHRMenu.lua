@@ -1,4 +1,4 @@
--- ServiçosAdd commentMore actions
+-- Serviços
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local VirtualInputManager = game:GetService("VirtualInputManager")
@@ -16,7 +16,7 @@ screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
 
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 250, 0, 300)
+mainFrame.Size = UDim2.new(0, 250, 0, 260)
 mainFrame.Position = UDim2.new(0, 20, 0, 20)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
@@ -50,7 +50,7 @@ end
 
 -- Estados dos scripts
 local golfEnabled, obbyEnabled, parkourEnabled = false, false, false
-local healthEnabled, orbitalEnabled = false, false
+local healthEnabled = false
 local running = true
 
 -- Botões
@@ -58,12 +58,11 @@ local btnGolf = createButton("Golf Script", 35)
 local btnObby = createButton("Obby Script", 80)
 local btnParkour = createButton("Parkour Script", 125)
 local btnHealth = createButton("Health Check", 170)
-local btnOrbital = createButton("Orbital Kill", 215)
 
 -- Botão destruir
 local btnDestroy = Instance.new("TextButton")
 btnDestroy.Size = UDim2.new(1, -20, 0, 40)
-btnDestroy.Position = UDim2.new(0, 10, 0, 260)
+btnDestroy.Position = UDim2.new(0, 10, 0, 215)
 btnDestroy.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
 btnDestroy.Text = "Destruir Menu & Parar Tudo"
 btnDestroy.TextColor3 = Color3.new(1,1,1)
@@ -83,7 +82,6 @@ btnGolf.MouseButton1Click:Connect(function() toggle(btnGolf, "golfEnabled") end)
 btnObby.MouseButton1Click:Connect(function() toggle(btnObby, "obbyEnabled") end)
 btnParkour.MouseButton1Click:Connect(function() toggle(btnParkour, "parkourEnabled") end)
 btnHealth.MouseButton1Click:Connect(function() toggle(btnHealth, "healthEnabled") end)
-btnOrbital.MouseButton1Click:Connect(function() toggle(btnOrbital, "orbitalEnabled") end)
 
 btnDestroy.MouseButton1Click:Connect(function()
     running = false
@@ -95,7 +93,6 @@ _G.golfEnabled = golfEnabled
 _G.obbyEnabled = obbyEnabled
 _G.parkourEnabled = parkourEnabled
 _G.healthEnabled = healthEnabled
-_G.orbitalEnabled = orbitalEnabled
 
 -----------------------------
 -- Scripts específicos
@@ -182,63 +179,6 @@ spawn(function()
                 wait(0.05)
                 VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Two, false, game)
             end)
-        end
-    end
-end)
-
--- Orbital Kill
-local orbitAngle, orbitTime, lastChange = 0, 0, 0
-local currentRadius, currentHeight = 10, 10
-local platform = nil
-spawn(function()
-    while running do
-        wait()
-        local dt = RunService.RenderStepped:Wait()
-        orbitTime += dt
-
-        if _G.orbitalEnabled and spawnedEntities then
-            if orbitTime - lastChange >= 1.5 then
-                currentRadius = math.random(5,30)
-                currentHeight = math.random(5,30)
-                lastChange = orbitTime
-            end
-            orbitAngle += math.rad(180) * dt
-            if orbitAngle > math.pi*2 then orbitAngle -= math.pi*2 end
-
-            local closest = nil
-            local minDist = math.huge
-            for _, e in ipairs(spawnedEntities:GetChildren()) do
-                local ehrp = e:FindFirstChild("HumanoidRootPart")
-                if ehrp then
-                    local dist = (ehrp.Position - hrp.Position).Magnitude
-                    if dist < minDist then
-                        minDist = dist
-                        closest = ehrp
-                    end
-                end
-            end
-
-            if closest then
-                if platform then platform:Destroy() platform=nil end
-                local center = closest.Position
-                local x = center.X + currentRadius * math.cos(orbitAngle)
-                local z = center.Z + currentRadius * math.sin(orbitAngle)
-                local y = center.Y + currentHeight
-                hrp.CFrame = CFrame.new(Vector3.new(x,y,z))
-            else
-                if not platform then
-                    platform = Instance.new("Part")
-                    platform.Size = Vector3.new(10,1,10)
-                    platform.Anchored = true
-                    platform.CanCollide = true
-                    platform.BrickColor = BrickColor.new("Really black")
-                    platform.Transparency = 0.3
-                    platform.Position = hrp.Position - Vector3.new(0,5,0)
-                    platform.Parent = workspace
-                end
-            end
-        else
-            if platform then platform:Destroy() platform=nil endAdd commentMore actions
         end
     end
 end)
