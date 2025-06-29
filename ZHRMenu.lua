@@ -94,25 +94,82 @@ _G.obbyEnabled = obbyEnabled
 _G.parkourEnabled = parkourEnabled
 _G.healthEnabled = healthEnabled
 
+-----------------------------
 -- Scripts específicos
+-----------------------------
+
+-- Golf, Obby, Parkour
 spawn(function()
     while running do
         if _G.golfEnabled then
-            -- conteúdo igual ao original para o Golf
+            local towerFloors = workspace:FindFirstChild("TowerFloors")
+            if towerFloors then
+                local golf = towerFloors:FindFirstChild("Golf")
+                if golf then
+                    for _, mg in ipairs(golf:GetChildren()) do
+                        local objs = mg:FindFirstChild("Objects")
+                        if objs then
+                            local golfBall = objs:FindFirstChild("Golf Ball")
+                            local clearPart = objs:FindFirstChild("Clear Part")
+                            if golfBall and clearPart and golfBall:IsA("BasePart") and not golfBall.Anchored then
+                                for _, c in ipairs(clearPart:GetChildren()) do
+                                    if c:IsA("TouchTransmitter") or c:IsA("TouchInterest") then
+                                        golfBall.CFrame = CFrame.new(clearPart.Position)
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
         end
 
         if _G.obbyEnabled then
-            -- conteúdo igual ao original para o Obby
+            local towerFloors = workspace:FindFirstChild("TowerFloors")
+            local obby = towerFloors and towerFloors:FindFirstChild("Panel Glass Obby")
+            if obby then
+                for _, stage in ipairs(obby:GetChildren()) do
+                    local objs = stage:FindFirstChild("Objects")
+                    local target = objs and objs:FindFirstChild("PlayerCompletedToucher")
+                    if target and target:IsA("BasePart") then
+                        for _, c in ipairs(target:GetChildren()) do
+                            if c:IsA("TouchTransmitter") or c:IsA("TouchInterest") then
+                                local root = character:FindFirstChild("HumanoidRootPart")
+                                if root then root.CFrame = CFrame.new(target.Position + Vector3.new(0,3,0)) end
+                                break
+                            end
+                        end
+                    end
+                end
+            end
         end
 
         if _G.parkourEnabled then
-            -- conteúdo igual ao original para o Parkour
+            local towerFloors = workspace:FindFirstChild("TowerFloors")
+            local parkour = towerFloors and towerFloors:FindFirstChild("Parkour Lava Rise")
+            if parkour then
+                for _, stage in ipairs(parkour:GetChildren()) do
+                    local objs = stage:FindFirstChild("Objects")
+                    local target = objs and objs:FindFirstChild("PlayerCompletedToucher")
+                    if target and target:IsA("BasePart") then
+                        for _, c in ipairs(target:GetChildren()) do
+                            if c:IsA("TouchTransmitter") or c:IsA("TouchInterest") then
+                                local root = character:FindFirstChild("HumanoidRootPart")
+                                if root then root.CFrame = CFrame.new(target.Position + Vector3.new(0,3,0)) end
+                                break
+                            end
+                        end
+                    end
+                end
+            end
         end
 
         wait(1)
     end
 end)
 
+-- Health Check
 spawn(function()
     while running do
         wait(0.5)
