@@ -7,7 +7,6 @@ local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local hrp = character:WaitForChild("HumanoidRootPart")
 local playerGui = player:WaitForChild("PlayerGui")
-local spawnedEntities = workspace:FindFirstChild("SpawnedEntities")
 
 -- GUI principal
 local screenGui = Instance.new("ScreenGui")
@@ -34,7 +33,7 @@ title.TextScaled = true
 title.Font = Enum.Font.SourceSansBold
 title.Parent = mainFrame
 
--- Helper de botão
+-- Função para criar botões
 local function createButton(text, y)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, -20, 0, 40)
@@ -48,18 +47,16 @@ local function createButton(text, y)
     return btn
 end
 
--- Estados dos scripts
+-- Estados e botões
 local golfEnabled, obbyEnabled, parkourEnabled = false, false, false
 local healthEnabled = false
 local running = true
 
--- Botões
 local btnGolf = createButton("Golf Script", 35)
 local btnObby = createButton("Obby Script", 80)
 local btnParkour = createButton("Parkour Script", 125)
 local btnHealth = createButton("Health Check", 170)
 
--- Botão destruir
 local btnDestroy = Instance.new("TextButton")
 btnDestroy.Size = UDim2.new(1, -20, 0, 40)
 btnDestroy.Position = UDim2.new(0, 10, 0, 215)
@@ -70,7 +67,7 @@ btnDestroy.TextScaled = true
 btnDestroy.Font = Enum.Font.SourceSansBold
 btnDestroy.Parent = mainFrame
 
--- Toggle genérico
+-- Função de toggle
 local function toggle(btn, flag)
     _G[flag] = not _G[flag]
     local state = _G[flag]
@@ -78,6 +75,7 @@ local function toggle(btn, flag)
     btn.BackgroundColor3 = state and Color3.fromRGB(0,170,0) or Color3.fromRGB(40,40,40)
 end
 
+-- Conexões dos botões
 btnGolf.MouseButton1Click:Connect(function() toggle(btnGolf, "golfEnabled") end)
 btnObby.MouseButton1Click:Connect(function() toggle(btnObby, "obbyEnabled") end)
 btnParkour.MouseButton1Click:Connect(function() toggle(btnParkour, "parkourEnabled") end)
@@ -88,35 +86,33 @@ btnDestroy.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
 
--- Inicializa globais
+-- Inicializa variáveis globais
 _G.golfEnabled = golfEnabled
 _G.obbyEnabled = obbyEnabled
 _G.parkourEnabled = parkourEnabled
 _G.healthEnabled = healthEnabled
 
------------------------------
 -- Scripts específicos
------------------------------
-
--- Golf, Obby, Parkour
 spawn(function()
     while running do
+        -- GOLF
         if _G.golfEnabled then
             local towerFloors = workspace:FindFirstChild("TowerFloors")
-            if towerFloors then
-                local golf = towerFloors:FindFirstChild("Golf")
-                if golf then
-                    for _, mg in ipairs(golf:GetChildren()) do
-                        local objs = mg:FindFirstChild("Objects")
-                        if objs then
-                            local golfBall = objs:FindFirstChild("Golf Ball")
-                            local clearPart = objs:FindFirstChild("Clear Part")
-                            if golfBall and clearPart and golfBall:IsA("BasePart") and not golfBall.Anchored then
-                                for _, c in ipairs(clearPart:GetChildren()) do
-                                    if c:IsA("TouchTransmitter") or c:IsA("TouchInterest") then
+            local golf = towerFloors and towerFloors:FindFirstChild("Golf")
+            if golf then
+                for _, mg in ipairs(golf:GetChildren()) do
+                    local objs = mg:FindFirstChild("Objects")
+                    if objs then
+                        local golfBall = objs:FindFirstChild("Golf Ball")
+                        local clearPart = objs:FindFirstChild("Clear Part")
+                        if golfBall and clearPart and golfBall:IsA("BasePart") and not golfBall.Anchored then
+                            for _, c in ipairs(clearPart:GetChildren()) do
+                                if c:IsA("TouchTransmitter") or c:IsA("TouchInterest") then
+                                    task.wait(5)
+                                    if golfBall and clearPart then
                                         golfBall.CFrame = CFrame.new(clearPart.Position)
-                                        break
                                     end
+                                    break
                                 end
                             end
                         end
@@ -125,6 +121,7 @@ spawn(function()
             end
         end
 
+        -- OBBY
         if _G.obbyEnabled then
             local towerFloors = workspace:FindFirstChild("TowerFloors")
             local obby = towerFloors and towerFloors:FindFirstChild("Panel Glass Obby")
@@ -136,7 +133,9 @@ spawn(function()
                         for _, c in ipairs(target:GetChildren()) do
                             if c:IsA("TouchTransmitter") or c:IsA("TouchInterest") then
                                 local root = character:FindFirstChild("HumanoidRootPart")
-                                if root then root.CFrame = CFrame.new(target.Position + Vector3.new(0,3,0)) end
+                                if root then
+                                    root.CFrame = CFrame.new(target.Position + Vector3.new(0,3,0))
+                                end
                                 break
                             end
                         end
@@ -145,6 +144,7 @@ spawn(function()
             end
         end
 
+        -- PARKOUR
         if _G.parkourEnabled then
             local towerFloors = workspace:FindFirstChild("TowerFloors")
             local parkour = towerFloors and towerFloors:FindFirstChild("Parkour Lava Rise")
@@ -156,7 +156,9 @@ spawn(function()
                         for _, c in ipairs(target:GetChildren()) do
                             if c:IsA("TouchTransmitter") or c:IsA("TouchInterest") then
                                 local root = character:FindFirstChild("HumanoidRootPart")
-                                if root then root.CFrame = CFrame.new(target.Position + Vector3.new(0,3,0)) end
+                                if root then
+                                    root.CFrame = CFrame.new(target.Position + Vector3.new(0,3,0))
+                                end
                                 break
                             end
                         end
@@ -169,7 +171,7 @@ spawn(function()
     end
 end)
 
--- Health Check
+-- Health Auto-Heal
 spawn(function()
     while running do
         wait(0.5)
