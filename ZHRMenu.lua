@@ -102,29 +102,26 @@ _G.healthEnabled = healthEnabled
 spawn(function()
     while running do
         if _G.golfEnabled then
-                task.spawn(function()
-                        task.wait(5)
-                    local towerFloors = workspace:FindFirstChild("TowerFloors")
-                    if towerFloors then
-                        local golf = towerFloors:FindFirstChild("Golf")
-                        if golf then
-                            for _, mg in ipairs(golf:GetChildren()) do
-                                local objs = mg:FindFirstChild("Objects")
-                                if objs then
-                                    local golfBall = objs:FindFirstChild("Golf Ball")
-                                    local clearPart = objs:FindFirstChild("Clear Part")
-                                    if golfBall and clearPart and golfBall:IsA("BasePart") and not golfBall.Anchored then
-                                        for _, c in ipairs(clearPart:GetChildren()) do
-                                            if c:IsA("TouchTransmitter") or c:IsA("TouchInterest") then
-                                                golfBall.CFrame = CFrame.new(clearPart.Position)
-                                                break
-                                            end
-                                        end
+            local towerFloors = workspace:FindFirstChild("TowerFloors")
+            if towerFloors then
+                local golf = towerFloors:FindFirstChild("Golf")
+                if golf then
+                    for _, mg in ipairs(golf:GetChildren()) do
+                        local objs = mg:FindFirstChild("Objects")
+                        if objs then
+                            local golfBall = objs:FindFirstChild("Golf Ball")
+                            local clearPart = objs:FindFirstChild("Clear Part")
+                            if golfBall and clearPart and golfBall:IsA("BasePart") and not golfBall.Anchored then
+                                for _, c in ipairs(clearPart:GetChildren()) do
+                                    if c:IsA("TouchTransmitter") or c:IsA("TouchInterest") then
+                                        golfBall.CFrame = CFrame.new(clearPart.Position)
+                                        break
                                     end
                                 end
                             end
                         end
-                        end)
+                    end
+                end
             end
         end
 
